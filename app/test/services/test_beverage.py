@@ -31,9 +31,9 @@ def test_get_beverage_by_id_service(client, create_beverage, beverage_uri):
         pytest.assume(returned_beverage[param] == value)
 
 
-def test_get_beverages_service(client, create_beverage, beverage_uri):
+def test_get_beverages_service(client, create_beverages, beverage_uri):
     response = client.get(beverage_uri)
     pytest.assume(response.status.startswith('200'))
     returned_beverages = {beverage['_id']: beverage for beverage in response.json}
-    for beverage in create_beverage:
+    for beverage in create_beverages:
         pytest.assume(beverage['_id'] in returned_beverages)

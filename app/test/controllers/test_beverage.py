@@ -7,7 +7,7 @@ def test_create(app, beverage: dict):
     pytest.assume(error is None)
     for param, value in beverage.items():
         pytest.assume(param in created_beverage)
-        pytest.assume(value in created_beverage[param])
+        pytest.assume(value == created_beverage[param])
         pytest.assume(created_beverage['_id'])
 
 
