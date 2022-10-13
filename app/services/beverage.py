@@ -16,7 +16,6 @@ def create_beverage():
 
 @beverage.route('/', methods=PUT)
 def update_beverage():
-    print("LLEGASTE AL UPDATE")
     beverage, error = BeverageController.update(request.json)
     response = beverage if not error else {'error': error}
     status_code = 200 if not error else 400
@@ -33,9 +32,7 @@ def get_beverage_by_id(_id: int):
 
 @beverage.route('/', methods=GET)
 def get_beverages():
-    print("Llegaste AQUI")
     beverages, error = BeverageController.get_all()
-    print(error)
     response = beverages if not error else {'error': error}
     status_code = 200 if beverages else 404 if not error else 400
     return jsonify(response), status_code
