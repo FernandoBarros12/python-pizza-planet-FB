@@ -1,0 +1,36 @@
+name: Pizza CI
+
+on:
+  pull-request:
+    branches:
+    - main
+
+jobs:
+  pizza-CI:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.10.0
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Run linter
+      run: |
+        flake8 app/ manage.py
+    
+    - name: Run Tests
+      run: |
+        python manage.py test
+    
+    - name: Coverage file
+      run: |
+        pytest --cache-clear --cov=app app/test > coverage.txt
+    
+    - name: Post coverage comment
+      run : |
+        uses: coroo/pytest-coverage-commentator@v1.0.2
