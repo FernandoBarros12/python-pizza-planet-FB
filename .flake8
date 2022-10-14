@@ -1,4 +1,5 @@
 [flake8]
 exclude = 
     app/test,
+    app/seeds/seeder.py,
     */__init__.py,
