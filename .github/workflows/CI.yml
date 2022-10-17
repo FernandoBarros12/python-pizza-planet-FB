@@ -32,5 +32,4 @@ jobs:
         pytest --cache-clear --cov=app app/test > coverage.txt
     
     - name: Comment coverage
-      run : |
-        uses: coroo/pytest-coverage-commentator@v1.0.2
+      uses: coroo/pytest-coverage-commentator@v1.0.2
