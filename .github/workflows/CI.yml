@@ -1,7 +1,7 @@
 name: Pizza CI
 
 on:
-  pull-request:
+  pull_request:
     branches:
     - main
 
@@ -29,8 +29,7 @@ jobs:
     
     - name: Coverage file
       run: |
-        pytest --cache-clear --cov=app app/test > coverage.txt
+        pytest --cache-clear --cov=app app/test > pytest-coverage.txt
     
     - name: Comment coverage
-      run : |
-        uses: coroo/pytest-coverage-commentator@v1.0.2
+      uses: coroo/pytest-coverage-commentator@v1.0.2
