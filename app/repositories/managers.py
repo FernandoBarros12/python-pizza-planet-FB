@@ -1,6 +1,10 @@
+import datetime
 from typing import Any, List, Optional, Sequence
 
+from sqlalchemy import extract, func, desc
+
 from sqlalchemy.sql import text, column
+import operator
 
 from .models import Beverage, Ingredient, Order, OrderDetail, Size, db
 from .serializers import (BeverageSerializer,
@@ -103,3 +107,42 @@ class IndexManager(BaseManager):
     @classmethod
     def test_connection(cls):
         cls.session.query(column('1')).from_statement(text('SELECT 1')).all()
+
+
+class ReportManager(BaseManager):
+    serializer = OrderSerializer
+
+    @classmethod
+    def get__most_requested_ingredient(cls):
+        query_ingredient = cls.session.query( (Ingredient.name).label('field'), func.count(OrderDetail.ingredient_id).label('value') ).join(Ingredient).group_by(Ingredient.name).order_by(desc('value')).limit(1)
+        wanted_ingredient = query_ingredient[0].field
+        times = query_ingredient[0].value
+        return [wanted_ingredient, times]
+
+    @classmethod
+    def get_most_wealthy_month(cls):
+        query_month = cls.session.query( extract('month', Order.date).label('field'), func.sum(Order.total_price).label('value')).group_by('field').order_by(desc('value')).limit(1)
+        most_wealthy_month = datetime.date(2022, query_month[0].field, 21).strftime('%B')
+        profit = query_month[0].value
+        return [most_wealthy_month, profit]
+
+
+    @classmethod
+    def get_top_three_customers(cls):
+        query_top_customers = cls.session.query( (Order.client_name).label('field'), func.count(Order.client_name).label('value') ).group_by('field').order_by(desc('value')).limit(3)
+        result = []
+        for customer in query_top_customers:
+            result.append( (customer.field, customer.value) )
+        return result
+
+    @classmethod
+    def get_report(cls):
+        most_wanted_ingredient = cls.get__most_requested_ingredient()
+        most_profitable_month = cls.get_most_wealthy_month()
+        top_three_customers = cls.get_top_three_customers()
+        return {"top_ingredient": most_wanted_ingredient,
+                "top_month": most_profitable_month,
+                "top_one": top_three_customers[0],
+                "top_two": top_three_customers[1],
+                "top_three": top_three_customers[2]
+                }
