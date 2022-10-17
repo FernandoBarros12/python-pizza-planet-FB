@@ -2,4 +2,5 @@
 exclude = 
     app/test,
     app/seeds/seeder.py,
+    app/repositories/managers.py,
     */__init__.py,
